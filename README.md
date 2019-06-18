@@ -11,9 +11,9 @@ The user have to specify the following inputs:
 * usb serial port
 
 By running record_raw_gnss.py three file are generated and saved in the properly folders:
-... raw GNSS data in ubx format, in ./output_ubx
-... raw GNSS data in RINEX format in ./output_rinex
-... compress RINEX file in hatanaka format in ./output_hatanaka
+* raw GNSS data in ubx format, in ./output_ubx
+* raw GNSS data in RINEX format in ./output_rinex
+* compress RINEX file in hatanaka format in ./output_hatanaka
 
 The name of output file contains the date of the starting moment
 
