@@ -66,6 +66,10 @@ class GNSSReceiver:
         '''Function to convert a raw GNSS file from ubx format to RINEX format using CONVBIN module of rtklib
 
     '''
+
+
+        infile = 
+        outfile = 
         pass
     def Hatanaka():
         '''Function to compress a RINEX file using the hatanaka compression format
