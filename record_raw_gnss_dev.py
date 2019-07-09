@@ -74,11 +74,11 @@ class GNSSReceiver:
         pass
 
 def main():
-    print("***************** START SCRIPT *****************")
+    print("\n***************** START SCRIPT *****************\n")
     time_min = 1  #minutes
     Stazione1=GNSSReceiver() #if not specified the typical characteristics of the gnss receiver are those of NARVALO BOX
     print(Stazione1)
-    Stazione1.RecordRaw(1) #specify the number of minutes for the raw data recording
+    #Stazione1.RecordRaw(time_min) #specify the number of minutes for the raw data recording
     
     '''
     
