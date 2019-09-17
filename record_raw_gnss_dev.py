@@ -73,7 +73,8 @@ class GNSSReceiver:
         outfile_nav = "./output_rinex/%s.nav"%(self.out_raw)
         convbin_path="/home/pi/Lorenzo/RTKLIB/app/convbin/gcc/convbin"
     
-        run_convbin_obs = "%s %s -o %s -n %s"%(convbin_path, infile, outfile_obs, outfile_nav)
+        run_convbin_obs = "%s %s -o %s -n %s -od -os -v 3.02"%(convbin_path, infile, outfile_obs, outfile_nav)
+        print(run_convbin_obs)
         print("\n************* Conversion ubx --> RINEX *************\n")
         os.system(run_convbin_obs)
         print("\n************* Done! *************\n")
@@ -90,11 +91,12 @@ class GNSSReceiver:
 
 def main():
     print("\n***************** START SCRIPT *****************\n")
-    time_min = 1  #minutes
+    time_min = 2  #minutes
        
     out_path = "/home/pi/Lorenzo/code/raw_data_from_ublox/output_ubx"
     now = datetime.datetime.now()
-    out_raw = "raw_obs_%s-%s-%s_%s:%s" % (now.day, now.month, now.year, now.hour, now.minute)
+    author = "test_lollo"
+    out_raw = "raw_obs_%s_%s-%s-%s_%s:%s" % (author,now.day, now.month, now.year, now.hour, now.minute)
     
     Stazione1=GNSSReceiver(out_raw) #create the isatnce: if not specified the typical characteristics of the gnss receiver are those of NARVALO BOX
     print(Stazione1)    
