@@ -126,9 +126,39 @@ def ftpPush(ftp,path,infile):
         return False
 
 def chdir(ftp,dir): 
+    '''
+    Funzione per creare in automatico una cartella giornaliera per i rinex orari
+    La funzione controlla che la cartella non esista già e nel caso la crea
+    La funzione copia in automatico nella cartella creata i file per lo stile
+    '''
+
     folder_name='%04d-%02d-%02d'%(datetime.utcnow().utctimetuple().tm_year,datetime.utcnow().utctimetuple().tm_mon,datetime.utcnow().utctimetuple().tm_mday)
     if directory_exists(ftp,dir,folder_name) is False: # (or negate, whatever you prefer for readability)
         ftp.mkd(dir+folder_name)
+        path_local='{}/DisplayDirectoryContents'.format(os.path.dirname(os.path.realpath(__file__)))
+        path_remote='{}{}'.format(dir,folder_name)
+      
+
+        def uploadAllfiles(path_local,path_remote):
+            files = os.listdir(path_local)
+            for doc in files:
+                print(doc)
+                try:
+                    print('{}/{}'.format(path_local,doc))
+                    with open('{}/{}'.format(path_local,doc), 'rb') as f:
+                        ftp.storbinary('STOR {}/{}'.format(path_remote,doc), f)
+                except IsADirectoryError:
+                    print('ciao')
+                    path_local_new='{}/DisplayDirectoryContents/{}'.format(os.path.dirname(os.path.realpath(__file__)),doc)
+                    print(path_local_new)
+                    path_remote_new='{}/{}'.format(path_remote,doc)
+                    ftp.mkd(path_remote_new)
+                    uploadAllfiles(path_local_new,path_remote_new)
+                except Exception as e:
+                    print(e)
+                    return
+        uploadAllfiles(path_local,path_remote)
+
     else:
         return
 
@@ -284,7 +314,7 @@ def rinex302filename(st_code,ST,session_interval,obs_freq,data_type,data_type_fl
 
 def main():
     print("\n***************** START SCRIPT *****************\n")
-    time_min = 1  #minutes
+    time_min = 60  #minutes
     
     out_path = "/home/pi/gnss_obs/stazione_gnss_ufficio"
     #now = datetime.datetime.now()
