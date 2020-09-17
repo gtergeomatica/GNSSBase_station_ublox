@@ -350,7 +350,7 @@ def main():
     
     Stazione1.RecordRaw(time_min) #specify the number of minutes for the raw data recording
     
-    rin_file=Stazione1.RinexConverter("'LIGE'","'LIDAR ITALIA GNSS Permanent Station'",nome)
+    rin_file=Stazione1.RinexConverter("'LIGE'","'LIDAR ITALIA GNSS Permanent Station'",nome_file)
     print(rin_file)
     
     
@@ -359,7 +359,7 @@ def main():
     folder_name_day='%04d-%02d-%02d'%(datetime.utcnow().utctimetuple().tm_year,datetime.utcnow().utctimetuple().tm_mon,datetime.utcnow().utctimetuple().tm_mday)
     if ftpPush(ftp,remote_folder,nome_file,folder_name_day)== True: #carico il file rinex registrato sul server (il caricamento avviene nel if statement)
         print('cancello i file sul raspi')
-        Stazione1.removeRinex(nome)
+        Stazione1.removeRinex(nome_file)
         Stazione1.removeBinary()
     else:
         print('qualcosa non va...')
