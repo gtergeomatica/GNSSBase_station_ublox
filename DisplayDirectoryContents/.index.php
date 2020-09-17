@@ -11,7 +11,7 @@
 
 <body>
 <div id="container">
-	<h1>Directory Contents</h1>
+	<h1>File RINEX orari</h1>
 
 	<table class="sortable">
 	    <thead>
@@ -161,5 +161,13 @@
 	<h2><?php echo("<!--a href='$ahref'>$atext hidden files</a-->"); ?></h2>
 	<!-- ricordarsi di citare Special thanks to Cliff White.-->
 </div>
+
+<footer>
+ <p align="center"> <a href="javascript:history.back()"> Indietro </a>  </p> <br>
+ <small align="center">©2020 Lidar-italia  </small> <br>
+ <small align="center">Via Jacopo Ruffini 9/1A 16123 Genova </small> <br>
+ <small align="center">Contattaci a <a href="mailto: info@lidar-italia.it">info@lidar-italia.it</a> </small> <br>
+ <small align="center">Special thanks to Cliff White for the rendering of this page </small> <br> 
+</footer>
 </body>
 </html>
