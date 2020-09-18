@@ -1,6 +1,8 @@
 from ftplib import FTP
 import sys,os
 from credenziali import *
+from datetime import datetime, timedelta
+
 ''' 
 server = 'localhost'
 username = 'generic_user'
@@ -67,9 +69,25 @@ def directory_exists(ftp,dir,fname):
     return False
 
 remote_folder='/www.gter.it/stazione_gnss_ufficio/dati_rinex/'
-
-
+day_of_year = datetime.utcnow().utctimetuple().tm_yday
+year=datetime.utcnow().utctimetuple().tm_year
+hour=datetime.utcnow().utctimetuple().tm_hour
+hour_start=hour-1
+months=datetime.utcnow().utctimetuple().tm_mon
+days=datetime.utcnow().utctimetuple().tm_mday
+minutes=datetime.utcnow().utctimetuple().tm_min
+start_time='%04d%03d%02d%02d'%(year,day_of_year,hour,minutes)
+giorno_locale=datetime.now().timetuple().tm_yday
+ora_locale=datetime.now().timetuple().tm_hour
+anno_locale=datetime.now().timetuple().tm_year
+minuti_locali=datetime.now().timetuple().tm_min
+print(start_time)
+start_time_locale='%04d%03d%02d%02d'%(anno_locale,giorno_locale,ora_locale,minuti_locali)
+print(start_time_locale)
+'''
 ftp = FTP(ftp_url)  
 ftp.login(ftp_user, ftp_password) 
 chdir(ftp,remote_folder)
-ftp.quit()
+ftp.quit()'''
+
+

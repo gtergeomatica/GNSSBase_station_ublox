@@ -343,20 +343,37 @@ def main():
     start_time='%04d%03d%02d%02d'%(year,day_of_year,hour,minutes)
     out_raw = "raw_obs_%s_%s" % (author,start_time)
     nome_file=rinex302filename('LIGE',start_time,60,1,'MO',False,False)
-    
+    folder_name_day='%04d-%02d-%02d'%(datetime.utcnow().utctimetuple().tm_year,datetime.utcnow().utctimetuple().tm_mon,datetime.utcnow().utctimetuple().tm_mday)
 
     Stazione1=GNSSReceiver(out_raw,model='UBLOX ZED F9P',antenna="HEMISPHERE A45",rtklib_path='/home/pi/RTKLIB_demo5/')#create the isatnce: if not specified the typical characteristics of the gnss receiver are those of NARVALO BOX
-    print(Stazione1)    
+    #print(Stazione1)    
     
     Stazione1.RecordRaw(time_min) #specify the number of minutes for the raw data recording
     
     rin_file=Stazione1.RinexConverter("'LIGE'","'LIDAR ITALIA GNSS Permanent Station'",nome_file)
-    print(rin_file)
+    #
     
+
+    ###################### PRINT di CONTROLLO ######################
+    '''
+    giorno_locale=datetime.now().timetuple().tm_yday
+    ora_locale=datetime.now().timetuple().tm_hour
+    anno_locale=datetime.now().timetuple().tm_year
+    minuti_locali=datetime.now().timetuple().tm_min
+    start_time_locale='%04d%03d%02d%02d'%(anno_locale,giorno_locale,ora_locale,minuti_locali)
+
+    print(Stazione1)
+    print('\nstart time Locale ',start_time_locale)
+    print('start time UTC ',start_time)
+
+    print('\nFile rinex registrato',rin_file)
+    print('nome cartella inizio script: ',folder_name_day)
+    ###########################################
+    '''
     
     ftp = FTP(ftp_url)  
     ftp.login(ftp_user, ftp_password) 
-    folder_name_day='%04d-%02d-%02d'%(datetime.utcnow().utctimetuple().tm_year,datetime.utcnow().utctimetuple().tm_mon,datetime.utcnow().utctimetuple().tm_mday)
+    
     if ftpPush(ftp,remote_folder,nome_file,folder_name_day)== True: #carico il file rinex registrato sul server (il caricamento avviene nel if statement)
         print('cancello i file sul raspi')
         Stazione1.removeRinex(nome_file)

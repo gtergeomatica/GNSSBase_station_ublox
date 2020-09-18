@@ -145,7 +145,7 @@
 	// Output
 	 echo("
 		<tr class='$class'>
-			<td><a href='./$namehref'$favicon class='name'>$name</a></td>
+			<td><a href='./$namehref'$favicon download class='name'>$name</a></td>
 			<td><a href='./$namehref'>$extn</a></td>
 			<td sorttable_customkey='$sizekey'><a href='./$namehref'>$size</a></td>
 			<td sorttable_customkey='$timekey'><a href='./$namehref'>$modtime</a></td>
@@ -164,7 +164,7 @@
 
 <footer>
  <p align="center"> <a href="javascript:history.back()"> Indietro </a>  </p> <br>
- <small align="center">©2020 Lidar-italia  </small> <br>
+ <small align="center">ï¿½2020 Lidar-italia  </small> <br>
  <small align="center">Via Jacopo Ruffini 9/1A 16123 Genova </small> <br>
  <small align="center">Contattaci a <a href="mailto: info@lidar-italia.it">info@lidar-italia.it</a> </small> <br>
  <small align="center">Special thanks to Cliff White for the rendering of this page </small> <br> 
