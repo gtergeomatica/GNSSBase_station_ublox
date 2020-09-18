@@ -7,6 +7,8 @@ To record raw data the free and open source rtklib sofwater is exploited. In par
 
 If you use double frequency receivers with also Galileo constellation, the suggestion is to use the RTKLIB demo 5 version. [Download it here](https://github.com/rtklibexplorer/RTKLIB/tree/demo5).
 
+In order to make the script work, app str2str and convbin must be compiled. To compile str2str go into `/RTKLIB/app/str2str/gcc` and give the comand `make`. Same thing for convbin
+ 
 In the record_raw_gnss_dev.py script are also implemented function to automatically upload the recorded data, in RINEX format, to a ftp server.
 In order to make this function work properly a file named credenziali.py must be created in the same folder. The structure of credenziali.py is:
 ```python
