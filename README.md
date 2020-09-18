@@ -33,6 +33,9 @@ It's possible to record hourly files using this script by scheduling the script 
 
 The script generate also daily folder where hourly files are stored in a orderly way:
 
+![Immagine1](./img/ftp-screen1.png)
+
+![Immagine2](./img/ftp-screen2.png)
 
 By running record_raw_gnss.py three file are generated and saved in the properly folders:
 * raw GNSS data in ubx format, in ./output_ubx
