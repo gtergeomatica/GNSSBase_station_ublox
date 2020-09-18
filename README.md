@@ -30,10 +30,14 @@ It's possible to record hourly files using this script by scheduling the script 
 0 *  * * *   pi /usr/bin/python3 /home/pi/REPOSITORY/raw_data_from_ublox/record_raw_gnss_dev.py > /tmp/record_raw_gnss.log 2>&1
 
 ```
+
+The script generate also daily folder where hourly files are stored in a orderly way:
+
+
 By running record_raw_gnss.py three file are generated and saved in the properly folders:
 * raw GNSS data in ubx format, in ./output_ubx
 * raw GNSS data in RINEX format in ./output_rinex
-* compress RINEX file in hatanaka format in ./output_hatanaka
+
 
 
 
