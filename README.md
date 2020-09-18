@@ -1,4 +1,4 @@
-# raw_data_from_ublox
+# Record and Store GNSS raw data form ublox receivers
 This repository contains some script for automatically record raw GNSS data in ubx property format, convert them in RINEX format and compress them by Hatanaka compression format.
 
 The script are thought for a ublox receiver plugged to a raspberry through a usb cable. Moreover the scripts have been conceived for a Linux (Debian-like) operating system.
@@ -33,6 +33,9 @@ It's possible to record hourly files using this script by scheduling the script 
 
 The script generate also daily folder where hourly files are stored in a orderly way:
 
+![Immagine1](./img/ftp-screen1.png)
+
+![Immagine2](./img/ftp-screen2.png)
 
 By running record_raw_gnss.py three file are generated and saved in the properly folders:
 * raw GNSS data in ubx format, in ./output_ubx
