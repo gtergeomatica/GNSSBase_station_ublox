@@ -1,4 +1,4 @@
-# raw_data_from_ublox
+# Record and Store GNSS raw data form ublox receivers
 This repository contains some script for automatically record raw GNSS data in ubx property format, convert them in RINEX format and compress them by Hatanaka compression format.
 
 The script are thought for a ublox receiver plugged to a raspberry through a usb cable. Moreover the scripts have been conceived for a Linux (Debian-like) operating system.
