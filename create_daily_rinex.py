@@ -7,7 +7,7 @@ import errno
 from ftplib import FTP
 from credenziali import *
 import wget
-from record_raw_gnss_dev import chdir, directory_exists
+from record_raw_gnss_dev import ftpPush, chdir, directory_exists
 
 
 
@@ -28,20 +28,38 @@ def getFile(folder,filename):
 ftp = FTP(ftp_url)  
 ftp.login(ftp_user, ftp_password) 
 
-
 day_of_year = datetime.utcnow().utctimetuple().tm_yday
 year=datetime.utcnow().utctimetuple().tm_year
 hour=datetime.utcnow().utctimetuple().tm_hour
-hour_start=hour-1
-months=datetime.utcnow().utctimetuple().tm_mon
-days=datetime.utcnow().utctimetuple().tm_mday
-minutes=datetime.utcnow().utctimetuple().tm_min
+
+months=datetime.utcnow()-timedelta(days=1) #il -1 giorno serve per il caricamento dei file sul server
+
+
+def ftpPush(ftp,path,infile,folder_name):
+    '''
+    Function to send a file to an ftp server
+    '''
+    #folder_name='%04d-%02d-%02d'%(datetime.utcnow().utctimetuple().tm_year,datetime.utcnow().utctimetuple().tm_mon,datetime.utcnow().utctimetuple().tm_mday)
+    chdir(ftp,path,folder_name)
+    try:
+
+        with open('{}/rinex_temp/{}'.format(os.path.dirname(os.path.realpath(__file__)),infile), 'rb') as f:  
+            
+            ftp.storbinary('STOR {}{}/{}'.format(path,folder_name,infile), f)  
+        
+        return True
+    except Exception as e:
+        print('file non caricato sul server per la seguente ragione: {}'.format(e))
+        
+        return False
+
+
 
 # i giorni sono -1 perche' si uniscono tutti i rinex del giorno precedente
 folder_name_day='%04d-%02d-%02d'%(datetime.utcnow().utctimetuple().tm_year,datetime.utcnow().utctimetuple().tm_mon,datetime.utcnow().utctimetuple().tm_mday-1)
 
 print(folder_name_day)
-remote_folder='www.gter.it/stazione_gnss_ufficio/dati_rinex/{}'.format(folder_name_day)
+remote_folder='www.gter.it/stazione_gnss_ufficio/dati_rinex_orari/{}'.format(folder_name_day)
 
 
 ftp.cwd(remote_folder)
@@ -78,9 +96,19 @@ for i in os.listdir('{}/rinex_temp'.format(os.path.dirname(os.path.realpath(__fi
     if i[-15:-10]=='_01H_':
         os.system('rm {}/rinex_temp/{}'.format(os.path.dirname(os.path.realpath(__file__)),i))
 
+print('\nCreo cartella annuale e mensile')
+remote_folder='/www.gter.it/stazione_gnss_ufficio/dati_rinex_giornalieri/'
+chdir(ftp,remote_folder,'{}'.format(year))
+remote_folder+='{}/'.format(year)
+folder_name_month='{}'.format(months.strftime('%b'))
 
 
+print('\nUpload del file')
+daily_file=os.listdir('{}/rinex_temp'.format(os.path.dirname(os.path.realpath(__file__))))[0]
 
+if ftpPush(ftp,remote_folder,daily_file,folder_name_month)== True: #carico il file rinex registrato sul server (il caricamento avviene nel if statement)
+    print('\ncancello il file sul pc')
+    os.system('rm {}/rinex_temp/{}'.format(os.path.dirname(os.path.realpath(__file__)),daily_file))
 
 
 
