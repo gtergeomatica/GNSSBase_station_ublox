@@ -331,7 +331,7 @@ def main():
     
     
     
-    remote_folder='/www.gter.it/stazione_gnss_ufficio/dati_rinex/'
+    remote_folder='/www.gter.it/stazione_gnss_ufficio/dati_rinex_orari/'
 
     day_of_year = datetime.utcnow().utctimetuple().tm_yday
     year=datetime.utcnow().utctimetuple().tm_year

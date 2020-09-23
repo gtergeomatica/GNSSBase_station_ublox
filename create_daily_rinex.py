@@ -7,6 +7,7 @@ import errno
 from ftplib import FTP
 from credenziali import *
 import wget
+from record_raw_gnss_dev import chdir, directory_exists
 
 
 
@@ -76,3 +77,10 @@ print('\nRimozione dei file orari a 30s')
 for i in os.listdir('{}/rinex_temp'.format(os.path.dirname(os.path.realpath(__file__)))):
     if i[-15:-10]=='_01H_':
         os.system('rm {}/rinex_temp/{}'.format(os.path.dirname(os.path.realpath(__file__)),i))
+
+
+
+
+
+
+
