@@ -28,6 +28,7 @@ The user have to specify the following inputs:
 
 It's possible to record hourly files using this script by scheduling the script in the cron job. For example you can add the following line to the /etc/crontab file
 
+
 ```
 0 *  * * *   pi /usr/bin/python3 /home/pi/REPOSITORY/raw_data_from_ublox/record_raw_gnss_dev.py > /tmp/record_raw_gnss.log 2>&1
 
@@ -45,4 +46,18 @@ By running record_raw_gnss.py three file are generated and saved in the properly
 
 
 
+## Create daily RINEX file
 
+The script create_daily_rinex.py creates a daily rinex file using the hourly file registered. In particular the script:
+* downloads all the rinex file registered the day before
+* resamples all the files from 1s to 30s (this operation is crutial in order not to create too big files) and eliminates the original files
+* splices all the files in a single file automatically named with the RINEX 3 convenction
+* eliminates all the 24 hourly files (the ones resampled)
+* uploads the daily file to the ftp server and eliminates it from the local storage
+
+The script create_daily_rinex.py should run once a day. For this reason a good choise is to put this script in the /etc/crontab file. For example you can add the following line:
+
+```
+00 11   * * *   ubuntu   /usr/bin/python3 /home/ubuntu/raw_data_from_ublox/create_daily_rinex.py > /tmp/daily_rinex_creation.log 2>&1 
+
+```
