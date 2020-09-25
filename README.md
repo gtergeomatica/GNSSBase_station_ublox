@@ -54,6 +54,7 @@ The script create_daily_rinex.py creates a daily rinex file using the hourly fil
 * splices all the files in a single file automatically named with the RINEX 3 convenction
 * eliminates all the 24 hourly files (the ones resampled)
 * uploads the daily file to the ftp server and eliminates it from the local storage
+The resample and the splice of the files are done thanks to the gfzrnx program. You can find more information about this software at the following [link]("https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=escidoc:1577894").
 
 The script create_daily_rinex.py should run once a day. For this reason a good choise is to put this script in the /etc/crontab file. For example you can add the following line:
 
