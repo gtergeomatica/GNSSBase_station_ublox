@@ -19,7 +19,7 @@ def getFile(folder,filename):
     
     try:
         obsfile=wget.download('https://{}/{}'.format(folder,filename),out='{}/rinex_temp'.format(os.path.dirname(os.path.realpath(__file__))))
-        print(type(obsfile))
+        #print(type(obsfile))
     except Exception as e:
         print(e)
 
@@ -56,7 +56,9 @@ def ftpPush(ftp,path,infile,folder_name):
 
 
 # i giorni sono -1 perche' si uniscono tutti i rinex del giorno precedente
-folder_name_day='%04d-%02d-%02d'%(datetime.utcnow().utctimetuple().tm_year,datetime.utcnow().utctimetuple().tm_mon,datetime.utcnow().utctimetuple().tm_mday-1)
+ieri=datetime.utcnow()-timedelta(days=1)
+
+folder_name_day='%04d-%02d-%02d'%(ieri.utctimetuple().tm_year,ieri.utctimetuple().tm_mon,ieri.utctimetuple().tm_mday)
 
 print(folder_name_day)
 remote_folder='www.gter.it/stazione_gnss_ufficio/dati_rinex_orari/{}'.format(folder_name_day)
@@ -102,6 +104,7 @@ chdir(ftp,remote_folder,'{}'.format(year))
 remote_folder+='{}/'.format(year)
 folder_name_month='{}'.format(months.strftime('%b'))
 
+#link per scaricare i navigazionali da IGS ftp://cddis.nasa.gov/gnss/data/daily/2020/brdc/
 
 print('\nUpload del file')
 daily_file=os.listdir('{}/rinex_temp'.format(os.path.dirname(os.path.realpath(__file__))))[0]
