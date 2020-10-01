@@ -2,6 +2,7 @@ from ftplib import FTP
 import sys,os
 from credenziali import *
 from datetime import datetime, timedelta
+from record_raw_gnss_dev import *
 
 ''' 
 server = 'localhost'
@@ -67,6 +68,15 @@ def directory_exists(ftp,dir,fname):
         if f.split()[-1] == fname:
             return True
     return False
+
+
+out_raw = "raw_obs_LIGE_20202741700"
+nome_file='LIGE00ITA_R_20202741700_01H_01S.20O'
+Stazione1=GNSSReceiver(out_raw,model='UBLOX ZED F9P',antenna="HEMISPHERE A45",rtklib_path='/home/pi/RTKLIB_demo5/',st_coord=(4509156.9882,709152.4855,4440014.3496))
+print(Stazione1)
+
+rin_file=Stazione1.RinexConverter("'LIGE'","'LIDAR ITALIA GNSS Permanent Station'",nome_file)
+sys.exit()
 
 remote_folder='/www.gter.it/stazione_gnss_ufficio/dati_rinex/'
 day_of_year = datetime.utcnow().utctimetuple().tm_yday

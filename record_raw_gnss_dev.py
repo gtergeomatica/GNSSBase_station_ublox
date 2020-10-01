@@ -16,7 +16,7 @@ from credenziali import *
 class GNSSReceiver:
     '''This class describes the possibile action that a generic GNSS receiver connected to a microprocessor can do'''
     
-    def __init__(self, out_raw="default_filename", model="Ublox neo m8t", antenna="patch", serial="ttyACM0", raw_format="ubx",repo_absolute_path="/home/pi/REPOSITORY/raw_data_from_ublox/",rtklib_path='/home/pi/RTKLIB/'):
+    def __init__(self, out_raw="default_filename", model="Ublox neo m8t", antenna="patch", serial="ttyACM0", raw_format="ubx",repo_absolute_path="/home/pi/REPOSITORY/raw_data_from_ublox/",rtklib_path='/home/pi/RTKLIB/',st_coord=()):
         self.model=model
         self.antenna=antenna
         self.serial=serial
@@ -24,7 +24,8 @@ class GNSSReceiver:
         self.out_raw=out_raw
         self.repo_absolute_path=repo_absolute_path #the path where the repository has been cloned
         self.rtklib_path=rtklib_path
-
+        self.st_coord=st_coord #approximate XYZ (ECEF) station coordinates
+        
     def __str__(self):
         return "\tReceiver: %s\n\tAntenna: %s\n\tSerial: %s\n\tGNSS raw format: %s\n\tGNSS raw data file: ./output_ubx/%s\n\trtklib path: %s\n"%(self.model,self.antenna,self.serial,self.raw_format,self.out_raw,self.rtklib_path)
 
@@ -73,21 +74,26 @@ class GNSSReceiver:
         '''Function to convert a raw GNSS file from ubx format to RINEX format using CONVBIN module of rtklib
 
     '''
-        infile = "%s/output_ubx/%s.%s"%(os.path.dirname(os.path.realpath(__file__)),self.out_raw,self.raw_format)
-        outfile_obs = "%s/output_rinex/%s"%(os.path.dirname(os.path.realpath(__file__)),rinex_name)
-        outfile_nav = "%s/output_rinex/%s.nav"%(os.path.dirname(os.path.realpath(__file__)),self.out_raw)
-        convbin_path="%sapp/convbin/gcc/convbin"%(self.rtklib_path)
-        #marker = "'LIGE'"
-        #comment = "'LIDAR ITALIA GNSS Permanent Station'"
-        #receiver = "'Ublox ZED F9P'"
-        #antenna = "'HEMISPHERE A45'"
+        if type(self.st_coord) != tuple:
+            print('station coordinates must be in a tuple (x,y,x)')
+            return
+        else:
+            infile = "%s/output_ubx/%s.%s"%(os.path.dirname(os.path.realpath(__file__)),self.out_raw,self.raw_format)
+            outfile_obs = "%s/output_rinex/%s"%(os.path.dirname(os.path.realpath(__file__)),rinex_name)
+            outfile_nav = "%s/output_rinex/%s.nav"%(os.path.dirname(os.path.realpath(__file__)),self.out_raw)
+            convbin_path="%sapp/convbin/gcc/convbin"%(self.rtklib_path)
+            #marker = "'LIGE'"
+            #comment = "'LIDAR ITALIA GNSS Permanent Station'"
+            #receiver = "'Ublox ZED F9P'"
+            #antenna = "'HEMISPHERE A45'"
+        
     
-        run_convbin_obs = "%s %s -o %s -n %s -od -os -hc %s -hm %s -hr '%s' -ha '%s' -v 3.02"%(convbin_path, infile, outfile_obs, outfile_nav, comment, marker, self.model, self.antenna)
-        print(run_convbin_obs)
-        print("\n************* Conversion ubx --> RINEX *************\n")
-        os.system(run_convbin_obs)
-        print("\n************* Done! *************\n")
-        return(outfile_obs)
+            run_convbin_obs = "%s %s -o %s -n %s -od -os -hc %s -hm %s -hr '%s' -ha '%s' -hp %s/%s/%s -v 3.02"%(convbin_path, infile, outfile_obs, outfile_nav, comment, marker, self.model, self.antenna, self.st_coord[0], self.st_coord[1],self.st_coord[2])
+            print(run_convbin_obs)
+            print("\n************* Conversion ubx --> RINEX *************\n")
+            os.system(run_convbin_obs)
+            print("\n************* Done! *************\n")
+            return(outfile_obs)
 
     def removeRinex(self, filename):
         try:
@@ -345,7 +351,7 @@ def main():
     nome_file=rinex302filename('LIGE',start_time,60,1,'MO',False,False)
     folder_name_day='%04d-%02d-%02d'%(datetime.utcnow().utctimetuple().tm_year,datetime.utcnow().utctimetuple().tm_mon,datetime.utcnow().utctimetuple().tm_mday)
 
-    Stazione1=GNSSReceiver(out_raw,model='UBLOX ZED F9P',antenna="HEMISPHERE A45",rtklib_path='/home/pi/RTKLIB_demo5/')#create the isatnce: if not specified the typical characteristics of the gnss receiver are those of NARVALO BOX
+    Stazione1=GNSSReceiver(out_raw,model='UBLOX ZED F9P',antenna="HEMISPHERE A45",rtklib_path='/home/pi/RTKLIB_demo5/',st_coord=(4509156.9882,709152.4855,4440014.3496))#create the isatnce: if not specified the typical characteristics of the gnss receiver are those of NARVALO BOX
     #print(Stazione1)    
     
     Stazione1.RecordRaw(time_min) #specify the number of minutes for the raw data recording
