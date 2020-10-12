@@ -61,8 +61,8 @@ ieri=datetime.utcnow()-timedelta(days=1)
 folder_name_day='%04d-%02d-%02d'%(ieri.utctimetuple().tm_year,ieri.utctimetuple().tm_mon,ieri.utctimetuple().tm_mday)
 
 print(folder_name_day)
-remote_folder='www.gter.it/stazione_gnss_ufficio/dati_rinex_orari/{}'.format(folder_name_day)
-
+remote_folder='www.gter.it/stazione_gnss_ufficio/dati_rinex_orari/'
+remote_folder+='{}/{}/{}'.format(year,months.strftime('%b'),folder_name_day)
 
 ftp.cwd(remote_folder)
 contents = ftp.nlst()  # List CWD contents securely.

@@ -343,7 +343,7 @@ def main():
     year=datetime.utcnow().utctimetuple().tm_year
     hour=datetime.utcnow().utctimetuple().tm_hour
     hour_start=hour-1
-    months=datetime.utcnow().utctimetuple().tm_mon
+    months=datetime.utcnow()-timedelta(days=1)
     days=datetime.utcnow().utctimetuple().tm_mday
     minutes=datetime.utcnow().utctimetuple().tm_min
     start_time='%04d%03d%02d%02d'%(year,day_of_year,hour,minutes)
@@ -376,9 +376,19 @@ def main():
     print('nome cartella inizio script: ',folder_name_day)
     ###########################################
     '''
-    
     ftp = FTP(ftp_url)  
     ftp.login(ftp_user, ftp_password) 
+    
+    print('\nCreo cartella annuale e mensile')
+    
+    chdir(ftp,remote_folder,'{}'.format(year))
+    remote_folder+='{}/'.format(year)
+    chdir(ftp,remote_folder,'{}'.format(months.strftime('%b')))
+    remote_folder+='{}/'.format(months.strftime('%b'))
+
+
+
+
     
     if ftpPush(ftp,remote_folder,nome_file,folder_name_day)== True: #carico il file rinex registrato sul server (il caricamento avviene nel if statement)
         print('cancello i file sul raspi')
