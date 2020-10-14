@@ -43,7 +43,7 @@ class GNSSReceiver:
         out_file = "%s/output_ubx/%s.%s"%(os.path.dirname(os.path.realpath(__file__)),self.out_raw,self.raw_format)
         print(out_file)    
         str2str_path="%sapp/str2str/gcc/str2str"%(self.rtklib_path) #path to str2str executable
-        run_str2str = "%s -in serial://%s#%s -out file://%s &" %(str2str_path, self.serial, self.raw_format, out_file)
+        run_str2str = "%s -in serial://%s#%s -out file://%s -out tcpsvr://:8081 &" %(str2str_path, self.serial, self.raw_format, out_file)
         print(run_str2str)
         os.system("sudo killall str2str")   #non sicuro che sia la cosa giusta da fare
         print("\n************* Start data acquisition *************\n")
@@ -69,7 +69,7 @@ class GNSSReceiver:
             output_test_param="test_%s" %(parmeter)
             return output_test_param
 
-    def RinexConverter(self,marker,comment,rinex_name):
+    def RinexConverter(self,marker,comment,rinex_name_obs,rinex_name_nav):
 
         '''Function to convert a raw GNSS file from ubx format to RINEX format using CONVBIN module of rtklib
 
@@ -79,8 +79,8 @@ class GNSSReceiver:
             return
         else:
             infile = "%s/output_ubx/%s.%s"%(os.path.dirname(os.path.realpath(__file__)),self.out_raw,self.raw_format)
-            outfile_obs = "%s/output_rinex/%s"%(os.path.dirname(os.path.realpath(__file__)),rinex_name)
-            outfile_nav = "%s/output_rinex/%s.nav"%(os.path.dirname(os.path.realpath(__file__)),self.out_raw)
+            outfile_obs = "%s/output_rinex/%s"%(os.path.dirname(os.path.realpath(__file__)),rinex_name_obs)
+            outfile_nav = "%s/output_rinex/%s"%(os.path.dirname(os.path.realpath(__file__)),rinex_name_nav)
             convbin_path="%sapp/convbin/gcc/convbin"%(self.rtklib_path)
             #marker = "'LIGE'"
             #comment = "'LIDAR ITALIA GNSS Permanent Station'"
@@ -262,8 +262,8 @@ def rinex302filename(st_code,ST,session_interval,obs_freq,data_type,data_type_fl
 
     # STATION/PROJECT NAME
 
-    M=0 #da capire
-    R=0 #da capire
+    M=0 #master
+    R=0 #rover
 
     if st_code=='SAOR':
         CCC='FRA'
@@ -310,16 +310,14 @@ def rinex302filename(st_code,ST,session_interval,obs_freq,data_type,data_type_fl
 
     # DATA TYPE
     if data_type_flag:
-        filename+='{}_'.format(data_type)
+        if data_type =='MN':
+            filename=filename[:-4]+'_MN.rnx'
+            return filename
+        filename+='_{}.rnx'.format(data_type)
         #parte per compressione
     else:
-        if bin_flag:
-            filename+='.dat'
-        else:
-            if compression != None:
-                filename+='_{}.{}'.format(data_format,compression)      
-            else:
-                filename+='.{}O'.format(ST[2:4])
+        filename+='_{}.rnx'
+        
             
     
     return filename
@@ -329,7 +327,7 @@ def rinex302filename(st_code,ST,session_interval,obs_freq,data_type,data_type_fl
 
 def main():
     print("\n***************** START SCRIPT *****************\n")
-    time_min = 60  #minutes
+    time_min = 1  #minutes
     
     out_path = "/home/pi/gnss_obs/stazione_gnss_ufficio"
     #now = datetime.datetime.now()
@@ -348,15 +346,16 @@ def main():
     minutes=datetime.utcnow().utctimetuple().tm_min
     start_time='%04d%03d%02d%02d'%(year,day_of_year,hour,minutes)
     out_raw = "raw_obs_%s_%s" % (author,start_time)
-    nome_file=rinex302filename('LIGE',start_time,60,1,'MO',False,False)
+    nome_file_obs=rinex302filename('LIGE',start_time,60,1,'MO',True,False)
+    nome_file_nav=rinex302filename('LIGE',start_time,60,1,'MN',True,False)
     folder_name_day='%04d-%02d-%02d'%(datetime.utcnow().utctimetuple().tm_year,datetime.utcnow().utctimetuple().tm_mon,datetime.utcnow().utctimetuple().tm_mday)
 
     Stazione1=GNSSReceiver(out_raw,model='UBLOX ZED F9P',antenna="HEMISPHERE A45",rtklib_path='/home/pi/RTKLIB_demo5/',st_coord=(4509156.9882,709152.4855,4440014.3496))#create the isatnce: if not specified the typical characteristics of the gnss receiver are those of NARVALO BOX
-    #print(Stazione1)    
+    #print(Stazione1)
     
     Stazione1.RecordRaw(time_min) #specify the number of minutes for the raw data recording
     
-    rin_file=Stazione1.RinexConverter("'LIGE'","'LIDAR ITALIA GNSS Permanent Station'",nome_file)
+    rin_file=Stazione1.RinexConverter("'LIGE'","'LIDAR ITALIA GNSS Permanent Station'",nome_file_obs,nome_file_nav)
     #
     
 
@@ -389,11 +388,19 @@ def main():
 
 
 
-    
-    if ftpPush(ftp,remote_folder,nome_file,folder_name_day)== True: #carico il file rinex registrato sul server (il caricamento avviene nel if statement)
+    #carico il file di osservabili
+    if ftpPush(ftp,remote_folder,nome_file_obs,folder_name_day)== True: #carico il file rinex registrato sul server (il caricamento avviene nel if statement)
         print('cancello i file sul raspi')
-        Stazione1.removeRinex(nome_file)
+        Stazione1.removeRinex(nome_file_obs)
         Stazione1.removeBinary()
+    else:
+        print('qualcosa non va...')
+    
+    #carico il file navigazionale
+    if ftpPush(ftp,remote_folder,nome_file_nav,folder_name_day)== True: #carico il file rinex registrato sul server (il caricamento avviene nel if statement)
+        print('cancello i file sul raspi')
+        Stazione1.removeRinex(nome_file_nav)
+        
     else:
         print('qualcosa non va...')
     ftp.quit()
