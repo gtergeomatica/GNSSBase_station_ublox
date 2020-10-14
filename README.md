@@ -7,6 +7,11 @@ To record raw data the free and open source rtklib sofwater is exploited. In par
 
 If you use double frequency receivers with also Galileo constellation, the suggestion is to use the RTKLIB demo 5 version. [Download it here](https://github.com/rtklibexplorer/RTKLIB/tree/demo5).
 
+If you want to get the GNSS raw data from your u-blox receiver you must include them in the stream from usb (or UART ...). You can set this in the u-center software, in view --> configuration view. You must select:
+* RMX-RAWX for the GNSS observables
+* RMX-SFRBX for the navigation message
+For more details see the u-center [user guide](https://www.u-blox.com/sites/default/files/u-center_Userguide_(UBX-13005250).pdf). 
+
 In order to make the script work, app str2str and convbin must be compiled. To compile str2str go into `/RTKLIB/app/str2str/gcc` and give the comand `make`. Same thing for convbin
  
 In the record_raw_gnss_dev.py script are also implemented function to automatically upload the recorded data, in RINEX format, to a ftp server.
