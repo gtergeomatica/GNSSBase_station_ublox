@@ -7,7 +7,7 @@ import errno
 from ftplib import FTP
 from credenziali import *
 import wget
-from record_raw_gnss_dev import ftpPush, chdir, directory_exists
+from record_raw_gnss_dev import ftpPush, chdir, directory_exists, rinex302filename
 
 
 
@@ -80,15 +80,20 @@ def rinexSplice(tipologia,cartella_remota,contenuti,ftp,anno,mese):
         #print(i)  
         stringa_nomi+='{}/rinex_temp/{} '.format(os.path.dirname(os.path.realpath(__file__)),i)  
     #print('{0}/gfzrnx_lx -finp {1}-fout {0}/rinex_temp/::RX3::'.format(os.path.dirname(os.path.realpath(__file__)),stringa_nomi))
-    os.system('{0}/gfzrnx_lx -finp {1}-fout {0}/rinex_temp/::RX3::'.format(os.path.dirname(os.path.realpath(__file__)),stringa_nomi))
-    print('\nRimozione dei file orari a 30s')
-    
     if tipologia=='MN.rnx':
+        ieri=datetime.utcnow()-timedelta(days=1)
+        nome_file_nav=rinex302filename('LIGE','%4d%3d0000'%(ieri.utctimetuple().tm_year,ieri.utctimetuple().tm_yday),1440,1,'MN',True,False)
+        os.system('{0}/gfzrnx_lx -finp {1}-fout {0}/rinex_temp/{2}'.format(os.path.dirname(os.path.realpath(__file__)),stringa_nomi,nome_file_nav))
+        print('\nRimozione dei file orari a 30s')
+
         for i in os.listdir('{}/rinex_temp'.format(os.path.dirname(os.path.realpath(__file__)))):
             #print(i[-10:-7])
             if i[-10:-7]=='01H':
                 os.system('rm {}/rinex_temp/{}'.format(os.path.dirname(os.path.realpath(__file__)),i))
     elif tipologia=='MO.rnx':
+
+        os.system('{0}/gfzrnx_lx -finp {1}-fout {0}/rinex_temp/::RX3::'.format(os.path.dirname(os.path.realpath(__file__)),stringa_nomi))
+        print('\nRimozione dei file orari a 30s')
         for i in os.listdir('{}/rinex_temp'.format(os.path.dirname(os.path.realpath(__file__)))):
             #print(i[-14:-11])
             if i[-14:-11]=='01H':
@@ -124,7 +129,7 @@ def main():
 
 
     # i giorni sono -1 perche' si uniscono tutti i rinex del giorno precedente
-    ieri=datetime.utcnow()-timedelta(days=0)
+    ieri=datetime.utcnow()-timedelta(days=1)
 
     folder_name_day='%04d-%02d-%02d'%(ieri.utctimetuple().tm_year,ieri.utctimetuple().tm_mon,ieri.utctimetuple().tm_mday)
 
