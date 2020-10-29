@@ -30,7 +30,7 @@ class GNSSReceiver:
         return "\tReceiver: %s\n\tAntenna: %s\n\tSerial: %s\n\tGNSS raw format: %s\n\tGNSS raw data file: ./output_ubx/%s\n\trtklib path: %s\n"%(self.model,self.antenna,self.serial,self.raw_format,self.out_raw,self.rtklib_path)
 
 
-    def RecordRaw(self,time_min):
+    def RecordRaw(self,time_sec):
         ''' Method to record raw GNSS data from a ublox receiver.
             The receiver configuration is not set in this script and must be set using the u-center software
             Input parameters:
@@ -39,7 +39,7 @@ class GNSSReceiver:
             The raw GNSS data are saved by default in the ubx format in the folder ./output_ubx
     '''
         #time_min = 1 #time for raw data recording
-        time_sec = time_min*60
+        #time_sec = time_min*60
         out_file = "%s/output_ubx/%s.%s"%(os.path.dirname(os.path.realpath(__file__)),self.out_raw,self.raw_format)
         print(out_file)    
         str2str_path="%sapp/str2str/gcc/str2str"%(self.rtklib_path) #path to str2str executable
@@ -327,7 +327,7 @@ def rinex302filename(st_code,ST,session_interval,obs_freq,data_type,data_type_fl
 
 def main():
     print("\n***************** START SCRIPT *****************\n")
-    time_min = 1  #minutes
+    #time_min = 60  #minutes
     
     out_path = "/home/pi/gnss_obs/stazione_gnss_ufficio"
     #now = datetime.datetime.now()
@@ -353,7 +353,11 @@ def main():
     Stazione1=GNSSReceiver(out_raw,model='UBLOX ZED F9P',antenna="HEMISPHERE A45",rtklib_path='/home/pi/RTKLIB_demo5/',st_coord=(4509156.9882,709152.4855,4440014.3496))#create the isatnce: if not specified the typical characteristics of the gnss receiver are those of NARVALO BOX
     #print(Stazione1)
     
-    Stazione1.RecordRaw(time_min) #specify the number of minutes for the raw data recording
+    time_sec=3600-int(datetime.utcnow().utctimetuple().tm_sec)
+    #time_sec=120
+    print(time_sec)
+    #sys.exit()
+    Stazione1.RecordRaw(time_sec) #specify the number of minutes for the raw data recording
     
     rin_file=Stazione1.RinexConverter("'LIGE'","'LIDAR ITALIA GNSS Permanent Station'",nome_file_obs,nome_file_nav)
     #
