@@ -1,1 +1,1 @@
-5422,raw_obs_LIGE_20203031400,20203031400,/www.gter.it/stazione_gnss_ufficio/dati_rinex_orari/,2020,Oct,2020-10-29
+21344,raw_obs_LIGE_20203071500,20203071500,/www.gter.it/stazione_gnss_ufficio/dati_rinex_orari/,2020,Nov,2020-11-02
