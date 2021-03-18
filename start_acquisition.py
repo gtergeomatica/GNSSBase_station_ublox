@@ -16,7 +16,7 @@ year=datetime.utcnow().utctimetuple().tm_year
 day_of_year = datetime.utcnow().utctimetuple().tm_yday
 hour=datetime.utcnow().utctimetuple().tm_hour
 minutes=datetime.utcnow().utctimetuple().tm_min
-months=datetime.utcnow()-timedelta(days=1)
+months=datetime.utcnow()#-timedelta(days=1)
 ###############################################
 
 remote_folder='/www.gter.it/stazione_gnss_ufficio/dati_rinex_orari/'
